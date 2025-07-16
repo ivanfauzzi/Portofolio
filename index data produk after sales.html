@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Data Produk - WITS Group Company</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f2f5;
+      color: #333;
+    }
+
+    .header {
+      background-color: #000;
+      color: white;
+      padding: 1.5em 1em;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 1.6em;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+    }
+
+    h2 {
+      color: #0056b3;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .produk-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .produk-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .produk-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .produk-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: contain;
+      background-color: #f9f9f9;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .produk-card .info {
+      padding: 16px;
+      text-align: center;
+    }
+
+    .produk-card .info h3 {
+      margin: 0 0 12px;
+      font-size: 1.15em;
+    }
+
+    .produk-card .info a {
+      display: block;
+      margin: 6px 0;
+      color: #007bff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .produk-card .info a:hover {
+      color: #0056b3;
+    }
+
+    .footer {
+      background-color: #343a40;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      margin-top: 50px;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>🏭 Data Produk - WITS Group Company</h1>
+  </div>
+
+  <div class="container">
+    <h2>Produk After Sales</h2>
+    <div class="produk-grid">
+
+      <!-- Produk 1 -->
+      <div class="produk-card">
+        <a href="https://win-therm.com/copromec/" target="_blank">
+          <img src="Copromec-logo.jpg" alt="Copromec">
+        </a>
+        <div class="info">
+          <h3>Copromec</h3>
+          <a href="produk1.pdf" target="_blank">Lihat Detail (PDF)</a>
+          <a href="https://www.youtube.com/watch?v=VIDEO_ID1" target="_blank">Tonton Video Tutorial</a>
+        </div>
+      </div>
+
+      <!-- Produk 2 -->
+      <div class="produk-card">
+        <a href="https://win-therm.com/krigsmann-kroma/" target="_blank">
+          <img src="Krigsmann-logo.png" alt="Krigsmann Kroma">
+        </a>
+        <div class="info">
+          <h3>Krigsmann Kroma</h3>
+          <a href="produk2.pdf" target="_blank">Lihat Detail (PDF)</a>
+          <a href="https://www.youtube.com/watch?v=VIDEO_ID2" target="_blank">Tonton Video Tutorial</a>
+        </div>
+      </div>
+
+      <!-- Produk 3 -->
+      <div class="produk-card">
+        <a href="produk3.pdf" target="_blank">
+          <img src="produk3.jpg" alt="Produk 3 - Nama Produk">
+        </a>
+        <div class="info">
+          <h3>Produk 3 - Nama Produk</h3>
+          <a href="produk3.pdf" target="_blank">Lihat Detail (PDF)</a>
+          <a href="https://www.youtube.com/watch?v=VIDEO_ID3" target="_blank">Tonton Video Tutorial</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>&copy; 2025 WITS Group Company. Semua Hak Dilindungi.</p>
+  </div>
+
+</body>
+</html>
