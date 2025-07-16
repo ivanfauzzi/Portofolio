@@ -1,0 +1,427 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        460,
+        -20
+      ],
+      "id": "bd77258e-d446-4100-8c25-78cb993185ea",
+      "name": "When chat message received",
+      "webhookId": "7ced28b1-b1a6-4b18-a02e-8864f89f0d38"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Kamu adalah after sales engineer dari PT. Win Termal Solusindo\n\n1. Gunakan jawaban yang tersedia dari file google sheet.\n\n2. Prioritaskan informasi dari file \"After sales WITS AI\". Jika tidak ditemukan, gunakan file \"Aftersales\". Jika masih tidak ditemukan, gunakan file \"JAWABAN\" sebagai referensi tambahan.\n\n3. Tulis jawaban dengan bahasa yang sopan, profesional, dan mudah dipahami oleh pelanggan.\n\n4. Jangan menyebutkan atau menginformasikan sumber file maupun proses pencarian data dalam jawaban kepada pengguna.\n\n5. Jika tidak ditemukan data yang relevan di ketiga file tersebut, sampaikan bahwa: \"Informasi tersebut belum tersedia saat ini, dan akan segera ditindaklanjuti oleh tim kami.\"\n\n6. Jangan membuat asumsi yang tidak berdasar dari dokumen referensi.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        900,
+        -20
+      ],
+      "id": "1e0cb167-57eb-45d2-b2fd-f151ad1b9679",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        980,
+        220
+      ],
+      "id": "c1398fce-d724-4398-a904-04e0e0f6da23",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ymW6axZpSsAwx9aLhj0F9uSYg6axZ8XF2ML6qE46esA",
+          "mode": "list",
+          "cachedResultName": "JAWABAN",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ymW6axZpSsAwx9aLhj0F9uSYg6axZ8XF2ML6qE46esA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ymW6axZpSsAwx9aLhj0F9uSYg6axZ8XF2ML6qE46esA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        1360,
+        220
+      ],
+      "id": "972b0018-4100-488e-bb56-713ea802cadb",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "uieiLYYLtQorc8Rt",
+          "name": "Google Sheets account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1i8jmrTIYXHmGYAeATQEBPHaosvdkSifZa19NnPAsqbY",
+          "mode": "list",
+          "cachedResultName": "Pertanyaan",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1i8jmrTIYXHmGYAeATQEBPHaosvdkSifZa19NnPAsqbY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1i8jmrTIYXHmGYAeATQEBPHaosvdkSifZa19NnPAsqbY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "action",
+              "displayName": "action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "chatInput",
+              "displayName": "chatInput",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        680,
+        -20
+      ],
+      "id": "e76c5337-8ffb-4b42-a01b-d30f49e5e24c",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "uieiLYYLtQorc8Rt",
+          "name": "Google Sheets account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1ymW6axZpSsAwx9aLhj0F9uSYg6axZ8XF2ML6qE46esA",
+          "mode": "list",
+          "cachedResultName": "JAWABAN",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ymW6axZpSsAwx9aLhj0F9uSYg6axZ8XF2ML6qE46esA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ymW6axZpSsAwx9aLhj0F9uSYg6axZ8XF2ML6qE46esA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "output"
+          ],
+          "schema": [
+            {
+              "id": "output",
+              "displayName": "output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1240,
+        -20
+      ],
+      "id": "07e2e0a6-737d-4e20-b7dd-ce2e9b012427",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "uieiLYYLtQorc8Rt",
+          "name": "Google Sheets account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1i2DSxYMVFyH9EW6RKLqQTSMtHGVJHcWtElxymJ7mR04",
+          "mode": "list",
+          "cachedResultName": "Aftersales",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1i2DSxYMVFyH9EW6RKLqQTSMtHGVJHcWtElxymJ7mR04/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1i2DSxYMVFyH9EW6RKLqQTSMtHGVJHcWtElxymJ7mR04/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        1220,
+        220
+      ],
+      "id": "c9383fe2-1b21-4169-9d44-b6a0328dba0e",
+      "name": "Data After sales",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "uieiLYYLtQorc8Rt",
+          "name": "Google Sheets account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1i8jmrTIYXHmGYAeATQEBPHaosvdkSifZa19NnPAsqbY",
+          "mode": "list",
+          "cachedResultName": "After sales WITS AI",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1i8jmrTIYXHmGYAeATQEBPHaosvdkSifZa19NnPAsqbY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1i8jmrTIYXHmGYAeATQEBPHaosvdkSifZa19NnPAsqbY/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        1100,
+        220
+      ],
+      "id": "d6645418-f5bc-4f48-9770-0fd809c8a4b1",
+      "name": "Pertanyaan",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "uieiLYYLtQorc8Rt",
+          "name": "Google Sheets account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        580,
+        200
+      ],
+      "id": "350c9f2b-2345-450b-a5c2-2d5e60644b54",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "l0RoI69O5dDyJmJE",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        780,
+        220
+      ],
+      "id": "87241850-f657-4728-a8a2-f2dfc6880269",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ojUu0m9WmvrGky2F",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data After sales": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pertanyaan": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "32dad8e6-4f7d-4660-87b4-5ff0bca26bc1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dc590b75be151ef84de8bdd88d77298d0de1017484ea6c926bf63f849c1cd9e0"
+  },
+  "id": "H3tdwoh5e2M4IKqa",
+  "tags": []
+}
