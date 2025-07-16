@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://unpkg.com/paho-mqtt/mqtt.min.js"></script>
+
+<head>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IoT Dashboard</title>
+  <!-- Memasukkan Tailwind CSS dari CDN untuk styling cepat -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-sky-900 font-sans">
+  <!-- Header halaman berisi judul dashboard -->
+  <header class="bg-white text-gray-800 shadow p-4 flex items-center gap-4">
+    <!-- Tambahkan ini di dalam tag <header> sebelum atau sesudah logo -->
+    <nav class="relative">
+      <button onclick="toggleMenu()" class="text-sm font-semibold text-gray-800 hover:text-blue-600">
+        ☰ Menu
+      </button>
+      <ul id="submenu" class="absolute left-0 mt-2 bg-white shadow rounded-xl p-3 hidden z-10">
+        <li><a href="#section1" class="block px-4 py-2 hover:bg-gray-100">Mesin1</a></li>
+        <li><a href="#section2" class="block px-4 py-2 hover:bg-gray-100">Mesin2</a></li>
+        <li><a href="#section3" class="block px-4 py-2 hover:bg-gray-100">Mesin3</a></li>
+      </ul>
+    </nav>
+
+    <!-- Bisa masukkan logo di sini -->
+    <img src="logo.png" alt="Logo" class="h-8 w-35" />
+    <h1 class="text-2xl font-semibold">IOT Dashboard</h1>
+  </header>
+
+
+  <!-- Bagian utama halaman -->
+  <main class="p-6">
+    <section id="section1" class="block">
+      <h2 class="text-3xl font-bold text-center text-white mb-4">MESIN KRIGSMANN 1</h2>
+
+      <!-- Grid untuk menampilkan beberapa kartu informasi perangkat IoT -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Kartu 3: Menampilkan status perangkat IoT -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-2">Status Mesin 1</h2>
+          <p id="lampOnOffIndicator2" class="text-3xl font-bold text-gray-600">OFF</p>
+        </div>
+
+        <!-- Kartu 1: Menampilkan data suhu -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-2">Suhu</h2>
+          <p class="text-4xl font-bold text-red-500">28°C</p>
+          <p class="text-gray-500">Diperbarui: 5 detik lalu</p>
+        </div>
+
+        <!-- Kartu 2: Menampilkan data Amper -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-2">Amper</h2>
+          <p class="text-4xl font-bold text-blue-500">6,5A</p>
+          <p class="text-gray-500">Diperbarui: 5 detik lalu</p>
+        </div>
+
+        <!-- Kartu: Menampilkan status 4 valve -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-4">Status Valve Mesin 1</h2>
+
+          <!-- Grid isi 2 kolom -->
+          <div class="grid grid-cols-2 gap-4">
+
+            <!-- Valve 1 -->
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Valve 1</p>
+              <p id="status-valve1" class="text-2xl font-bold text-red-500">100</p>
+
+            </div>
+
+            <!-- Valve 2 -->
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Valve 2</p>
+              <p id="status-valve2" class="text-2xl font-bold text-red-500">100</p>
+
+            </div>
+
+            <!-- Valve 3 -->
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Valve 3</p>
+              <p id="status-valve3" class="text-2xl font-bold text-red-500">100</p>
+
+            </div>
+
+            <!-- Valve 4 -->
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Valve 4</p>
+              <p id="status-valve4" class="text-2xl font-bold text-red-500">100</p>
+
+            </div>
+
+            <!-- Valve 5 -->
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Valve 5</p>
+              <p id="status-valve5" class="text-2xl font-bold text-red-500">100</p>
+
+            </div>
+
+            <!-- Valve 6 -->
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Valve 6</p>
+              <p id="status-valve6" class="text-2xl font-bold text-red-500">100</p>
+
+            </div>
+
+          </div>
+
+          <!-- Waktu update -->
+          <p class="text-gray-500 mt-4 text-sm">Maksimal angka 100</p>
+        </div>
+
+
+        <!-- Kartu: Kontrol 4 Valve -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-4">Kontrol Valve Mesin1</h2>
+
+          <!-- Form Input Valve -->
+          <form id="valveForm" class="grid grid-cols-2 gap-4">
+
+            <!-- Valve 1 -->
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="valve1">Valve 1</label>
+              <input type="number" id="valve1" name="valve1" min="0" max="100"
+                class="w-full border border-gray-300 rounded-lg px-2 py-1" />
+            </div>
+
+            <!-- Valve 2 -->
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="valve2">Valve 2</label>
+              <input type="number" id="valve2" name="valve2" min="0" max="100"
+                class="w-full border border-gray-300 rounded-lg px-2 py-1" />
+            </div>
+
+            <!-- Valve 3 -->
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="valve3">Valve 3</label>
+              <input type="number" id="valve3" name="valve3" min="0" max="100"
+                class="w-full border border-gray-300 rounded-lg px-2 py-1" />
+            </div>
+
+            <!-- Valve 4 -->
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="valve4">Valve 4</label>
+              <input type="number" id="valve4" name="valve4" min="0" max="100"
+                class="w-full border border-gray-300 rounded-lg px-2 py-1" />
+            </div>
+
+            <!-- Valve 5 -->
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="valve5">Valve 5</label>
+              <input type="number" id="valve5" name="valve5" min="0" max="100"
+                class="w-full border border-gray-300 rounded-lg px-2 py-1" />
+            </div>
+
+            <!-- Valve 6 -->
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="valve6">Valve 6</label>
+              <input type="number" id="valve6" name="valve6" min="0" max="100"
+                class="w-full border border-gray-300 rounded-lg px-2 py-1" />
+            </div>
+          </form>
+
+          <!-- Tombol Kirim -->
+          <div class="mt-4">
+            <button onclick="submitValveData_mesin1()"
+              class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-xl">
+              Kirim
+            </button>
+          </div>
+        </div>
+
+
+        <!-- Kartu Kontrol Mode -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-4">Kontrol Mode</h2>
+
+          <!-- Grid untuk tombol -->
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <!-- Tombol ON -->
+            <!-- Tombol ON -->
+            <!-- Tombol ON -->
+            <button onclick="updateOnOffStatus_mesin1('ON')"
+              class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-2xl shadow">
+              ON
+            </button>
+            <!-- Tombol OFF -->
+            <button onclick="updateOnOffStatus_mesin1('OFF')"
+              class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-2xl shadow">
+              OFF
+            </button>
+            <!-- Tombol MANUAL -->
+            <button onclick="updateManualAutoStatus_mesin1('MANUAL')"
+              class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-2xl shadow">
+              MANUAL
+            </button>
+            <!-- Tombol AUTO -->
+            <button onclick="updateManualAutoStatus_mesin1('AUTO')"
+              class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-2xl shadow">
+              AUTO
+            </button>
+
+          </div>
+
+          <!-- Input nilai RPM -->
+          <div>
+            <label for="rpmInput" class="block text-sm text-gray-600 mb-1">Masukkan Nilai RPM</label>
+            <input type="number" id="rpmInput" name="rpmInput" min="0" max="20000"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Contoh: 14500" />
+
+            <!-- Tombol Kirim RPM -->
+            <button onclick="submitRPM_mesin1()"
+              class="mt-3 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-xl">
+              Kirim RPM
+            </button>
+          </div>
+
+        </div>
+        <!-- Kartu Indikator ON/OFF -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-2">Status ON/OFF</h2>
+          <p id="lampOnOffIndicator" class="text-3xl font-bold text-gray-600">OFF</p>
+        </div>
+
+        <!-- Kartu Indikator MANUAL/AUTO -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-2">Status Manual/Auto</h2>
+          <p id="lampManualAutoIndicator" class="text-3xl font-bold text-gray-600">AUTO</p>
+        </div>
+
+        <!-- Kartu 4: Menampilkan Real time RPM  -->
+
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-2">Real Time RPM</h2>
+          <p id="realtimeRPM" class="text-4xl font-bold text-yellow-500">14500</p>
+          <p class="text-gray-500">Maksimal RPM 14500</p>
+        </div>
+
+      </div>
+      </div>
+    </section>
+    <section id="section2" class="hidden">
+      <h2 class="text-3xl font-bold text-center text-white mb-4">MESIN KRIGSMANN 2</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Status Mesin 2 -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-2">Status Mesin 2</h2>
+          <p id="lampOnOffIndicator2_m2" class="text-3xl font-bold text-gray-600">OFF</p>
+        </div>
+
+        <!-- Suhu Mesin 2 -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-2">Suhu</h2>
+          <p class="text-4xl font-bold text-red-500">30°C</p>
+          <p class="text-gray-500">Diperbarui: 5 detik lalu</p>
+        </div>
+
+        <!-- Amper Mesin 2 -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-2">Amper</h2>
+          <p class="text-4xl font-bold text-blue-500">7.2A</p>
+          <p class="text-gray-500">Diperbarui: 5 detik lalu</p>
+        </div>
+
+        <!-- Status Valve Mesin 2 -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-4">Status Valve Mesin 2</h2>
+
+          <!-- Grid isi 2 kolom -->
+          <div class="grid grid-cols-2 gap-4">
+
+            <!-- Valve 1 -->
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Valve 1</p>
+              <p id="status-valve1" class="text-2xl font-bold text-red-500">100</p>
+
+            </div>
+
+            <!-- Valve 2 -->
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Valve 2</p>
+              <p id="status-valve2" class="text-2xl font-bold text-red-500">100</p>
+
+            </div>
+
+            <!-- Valve 3 -->
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Valve 3</p>
+              <p id="status-valve3" class="text-2xl font-bold text-red-500">100</p>
+
+            </div>
+
+            <!-- Valve 4 -->
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Valve 4</p>
+              <p id="status-valve4" class="text-2xl font-bold text-red-500">100</p>
+
+            </div>
+
+            <!-- Valve 5 -->
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Valve 5</p>
+              <p id="status-valve5" class="text-2xl font-bold text-red-500">100</p>
+
+            </div>
+
+            <!-- Valve 6 -->
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Valve 6</p>
+              <p id="status-valve6" class="text-2xl font-bold text-red-500">100</p>
+
+            </div>
+
+          </div>
+
+          <!-- Waktu update -->
+          <p class="text-gray-500 mt-4 text-sm">Maksimal angka 100</p>
+        </div>
+
+        <!-- Kontrol Valve Mesin 2 -->
+
+        <!-- Kartu: Kontrol 4 Valve -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-4">Kontrol Valve Mesin2</h2>
+
+          <!-- Form Input Valve -->
+          <form id="valveForm" class="grid grid-cols-2 gap-4">
+
+            <!-- Valve 1 -->
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="valve1">Valve 1</label>
+              <input type="number" id="valve1" name="valve1" min="0" max="100"
+                class="w-full border border-gray-300 rounded-lg px-2 py-1" />
+            </div>
+
+            <!-- Valve 2 -->
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="valve2">Valve 2</label>
+              <input type="number" id="valve2" name="valve2" min="0" max="100"
+                class="w-full border border-gray-300 rounded-lg px-2 py-1" />
+            </div>
+
+            <!-- Valve 3 -->
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="valve3">Valve 3</label>
+              <input type="number" id="valve3" name="valve3" min="0" max="100"
+                class="w-full border border-gray-300 rounded-lg px-2 py-1" />
+            </div>
+
+            <!-- Valve 4 -->
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="valve4">Valve 4</label>
+              <input type="number" id="valve4" name="valve4" min="0" max="100"
+                class="w-full border border-gray-300 rounded-lg px-2 py-1" />
+            </div>
+
+            <!-- Valve 5 -->
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="valve5">Valve 5</label>
+              <input type="number" id="valve5" name="valve5" min="0" max="100"
+                class="w-full border border-gray-300 rounded-lg px-2 py-1" />
+            </div>
+
+            <!-- Valve 6 -->
+            <div>
+              <label class="block text-sm text-gray-600 mb-1" for="valve6">Valve 6</label>
+              <input type="number" id="valve6" name="valve6" min="0" max="100"
+                class="w-full border border-gray-300 rounded-lg px-2 py-1" />
+            </div>
+          </form>
+
+          <!-- Tombol Kirim -->
+          <div class="mt-4">
+            <button onclick="submitValveData_mesin1()"
+              class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-xl">
+              Kirim
+            </button>
+          </div>
+        </div>
+
+
+        <!-- Kontrol Mode Mesin 2 -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-4">Kontrol Mode</h2>
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <button onclick="updateOnOffStatus_mesin2('ON')"
+              class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-2xl shadow">ON</button>
+            <button onclick="updateOnOffStatus_mesin2('OFF')"
+              class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-2xl shadow">OFF</button>
+            <button onclick="updateManualAutoStatus_mesin2('MANUAL')"
+              class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-2xl shadow">MANUAL</button>
+            <button onclick="updateManualAutoStatus_mesin2('AUTO')"
+              class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-2xl shadow">AUTO</button>
+          </div>
+
+          <!-- Input RPM Mesin 2 -->
+          <div>
+            <label for="rpmInput_mesin2" class="block text-sm text-gray-600 mb-1">Masukkan Nilai RPM</label>
+            <input type="number" id="rpmInput_mesin2" name="rpmInput_mesin2" min="0" max="20000"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="Contoh: 14000" />
+            <button onclick="submitRPM_mesin2()"
+              class="mt-3 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-xl">Kirim
+              RPM</button>
+          </div>
+        </div>
+
+        <!-- Status ON/OFF -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-2">Status ON/OFF</h2>
+          <p id="lampOnOffIndicator_m2" class="text-3xl font-bold text-gray-600">OFF</p>
+        </div>
+
+        <!-- Status Manual/AUTO -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-2">Status Manual/Auto</h2>
+          <p id="lampManualAutoIndicator_m2" class="text-3xl font-bold text-gray-600">AUTO</p>
+        </div>
+
+        <!-- Real-time RPM Mesin 2 -->
+        <div class="bg-white rounded-2xl shadow p-6">
+          <h2 class="text-lg font-semibold mb-2">Real Time RPM</h2>
+          <p id="realtimeRPM_mesin2" class="text-4xl font-bold text-yellow-500">14000</p>
+          <p class="text-gray-500">Maksimal RPM 14500</p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+  <script> <!-- Scrip untuk fungsi tombol dan input angka -->
+    function submitRPM_mesin1() {
+      const rpmInput_mesin1 = document.getElementById('rpmInput');
+      const rpmValue_mesin1 = rpmInput_mesin1.value;
+
+      if (rpmValue_mesin1 === '') {
+        alert('Masukkan nilai RPM terlebih dahulu.');
+        return;
+      }
+
+      const rpmNumber_mesin1 = parseInt(rpmValue_mesin1);
+
+      if (isNaN(rpmNumber_mesin1) || rpmNumber_mesin1 < 0 || rpmNumber_mesin1 > 14500) {
+        alert('Nilai RPM harus antara 0 hingga 14500.');
+        rpmInput_mesin1.focus();
+        return;
+      }
+
+      // Tampilkan di log (opsional)
+      console.log("RPM dikirim:", rpmNumber_mesin1);
+
+      // Tampilkan nilai RPM secara real-time di dashboard
+      const display = document.getElementById('realtimeRPM');
+      if (display) {
+        display.textContent = rpmNumber_mesin1;
+      }
+
+      // TODO: Kirim ke server/Node-RED jika diperlukan
+    }
+
+    function submitValveData_mesin1() {
+      const valves = [1, 2, 3, 4, 5, 6].map(num => {
+        const input = document.getElementById(`valve${num}`);
+        const val = input.value;
+
+        if (val === '') return null;
+
+        const parsed = parseInt(val);
+        if (isNaN(parsed) || parsed < 0 || parsed > 100) {
+          alert(`Nilai Valve ${num} harus antara 0 hingga 100.`);
+          input.focus();
+          throw new Error(`Input tidak valid di Valve ${num}`);
+        }
+
+        return parsed;
+      });
+
+      // Update nilai di kartu Status Valve 1
+      valves.forEach((val, index) => {
+        if (val !== null) {
+          const display = document.querySelector(`#status-valve${index + 1}`);
+          if (display) {
+            display.textContent = val;
+          }
+        }
+      });
+
+      console.log("Data valve dikirim:", valves);
+    }
+
+    function updateOnOffStatus_mesin1(status) {
+      const indicators = [
+        document.getElementById('lampOnOffIndicator'),
+        document.getElementById('lampOnOffIndicator2')
+      ];
+
+      let colorClass = 'text-gray-600';
+      if (status === 'ON') colorClass = 'text-green-500';
+      else if (status === 'OFF') colorClass = 'text-red-500';
+
+      indicators.forEach(el => {
+        if (el) {
+          el.textContent = status;
+          el.className = `text-3xl font-bold ${colorClass}`;
+        }
+      });
+
+      console.log("Status ON/OFF diubah ke:", status);
+    }
+
+
+    function updateManualAutoStatus_mesin1(status) {
+      const el = document.getElementById('lampManualAutoIndicator');
+      let colorClass = 'text-gray-600';
+
+      if (status === 'MANUAL') colorClass = 'text-yellow-500';
+      else if (status === 'AUTO') colorClass = 'text-blue-500';
+
+      if (el) {
+        el.textContent = status;
+        el.className = `text-3xl font-bold ${colorClass}`;
+      }
+
+      console.log("Status Manual/Auto diubah ke:", status);
+    }
+
+    function toggleMenu() {
+      const menu = document.getElementById('submenu');
+      menu.classList.toggle('hidden');
+    }
+
+
+    function toggleMenu() {
+      const menu = document.getElementById('submenu');
+      menu.classList.toggle('hidden');
+    }
+
+    document.querySelectorAll('#submenu a').forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        // Ambil id tujuan
+        const targetId = this.getAttribute('href').substring(1);
+
+        // Sembunyikan semua section
+        document.querySelectorAll('main section').forEach(sec => sec.classList.add('hidden'));
+
+        // Tampilkan hanya section target
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+          targetSection.classList.remove('hidden');
+        }
+
+        // Tutup submenu
+        toggleMenu();
+      });
+    });
+  </script>
+
+  <script>
+    function submitRPM_mesin2() {
+      const rpmInput_mesin2 = document.getElementById('rpmInput_mesin2');
+      const rpmValue_mesin2 = rpmInput_mesin2.value;
+
+      if (rpmValue_mesin2 === '') {
+        alert('Masukkan nilai RPM terlebih dahulu.');
+        return;
+      }
+
+      const rpm = parseInt(rpmValue);
+      if (isNaN(rpm) || rpm < 0 || rpm > 14500) {
+        alert('Nilai RPM harus antara 0 hingga 14500.');
+        rpmInput_mesin2.focus();
+        return;
+      }
+
+      document.getElementById('realtimeRPM_mesin2').textContent = rpm;
+      console.log("RPM Mesin 2 dikirim:", rpm);
+    }
+
+function submitValveData_mesin2() {
+  for (let i = 1; i <= 6; i++) {
+    const input = document.getElementById(`valve${i}_mesin2`);
+    if (!input) continue;
+
+    const val = input.value;
+    if (val === '') continue;
+
+    const parsed = parseInt(val);
+    if (isNaN(parsed) || parsed < 0 || parsed > 100) {
+      alert(`Nilai Valve ${i} harus antara 0 dan 100`);
+      input.focus();
+      return;
+    }
+
+    const display = document.getElementById(`status-valve${i}-mesin2`);
+    if (display) display.textContent = parsed;
+  }
+  console.log("Data valve Mesin 2 dikirim");
+}
+
+
+    function updateOnOffStatus_mesin2(status) {
+      const indicators = [
+        document.getElementById('lampOnOffIndicator_m2'),
+        document.getElementById('lampOnOffIndicator2_m2')
+      ];
+
+      let colorClass = 'text-gray-600';
+      if (status === 'ON') colorClass = 'text-green-500';
+      else if (status === 'OFF') colorClass = 'text-red-500';
+
+      indicators.forEach(el => {
+        if (el) {
+          el.textContent = status;
+          el.className = `text-3xl font-bold ${colorClass}`;
+        }
+      });
+
+      console.log("Status Mesin 2 ON/OFF:", status);
+    }
+
+    function updateManualAutoStatus_mesin2(status) {
+      const el = document.getElementById('lampManualAutoIndicator_m2');
+      let colorClass = 'text-gray-600';
+
+      if (status === 'MANUAL') colorClass = 'text-yellow-500';
+      else if (status === 'AUTO') colorClass = 'text-blue-500';
+
+      if (el) {
+        el.textContent = status;
+        el.className = `text-3xl font-bold ${colorClass}`;
+      }
+
+      console.log("Status Manual/Auto Mesin 2:", status);
+    }
+  </script>
+
+</body>
+
+</html>
